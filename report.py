@@ -1,13 +1,13 @@
 # encoding=utf8
-import requests
-import json
-import time
-import datetime
-import pytz
-import re
-import sys
 import argparse
+import datetime
+import json
+import re
+
+import pytz
+import requests
 from bs4 import BeautifulSoup
+
 
 class Report(object):
     def __init__(self, stuid, password, data_path):
@@ -31,14 +31,14 @@ class Report(object):
         if not loginsuccess:
             return False
         data = getform.text
-        data = data.encode('ascii','ignore').decode('utf-8','ignore')
+        data = data.encode('ascii', 'ignore').decode('utf-8', 'ignore')
         soup = BeautifulSoup(data, 'html.parser')
         token = soup.find("input", {"name": "_token"})['value']
 
         with open(self.data_path, "r+") as f:
             data = f.read()
             data = json.loads(data)
-            data["_token"]=token
+            data["_token"] = token
 
         headers = {
             'authority': 'weixine.ustc.edu.cn',
@@ -50,14 +50,15 @@ class Report(object):
             'referer': 'http://weixine.ustc.edu.cn/2020/',
             'accept-language': 'zh-CN,zh;q=0.9',
             'Connection': 'close',
-            'cookie': 'PHPSESSID=' + cookies.get("PHPSESSID") + ";XSRF-TOKEN=" + cookies.get("XSRF-TOKEN") + ";laravel_session="+cookies.get("laravel_session"),
+            'cookie': 'PHPSESSID=' + cookies.get("PHPSESSID") + ";XSRF-TOKEN=" + cookies.get(
+                "XSRF-TOKEN") + ";laravel_session=" + cookies.get("laravel_session"),
         }
 
         url = "http://weixine.ustc.edu.cn/2020/daliy_report"
         session.post(url, data=data, headers=headers)
         data = session.get("http://weixine.ustc.edu.cn/2020").text
         soup = BeautifulSoup(data, 'html.parser')
-        pattern = re.compile("2020-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
+        pattern = re.compile("2021-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
         token = soup.find(
             "span", {"style": "position: relative; top: 5px; color: #666;"})
         flag = False
@@ -99,7 +100,7 @@ if __name__ == "__main__":
     parser.add_argument('password', help='your CAS password', type=str)
     args = parser.parse_args()
     autorepoter = Report(stuid=args.stuid, password=args.password, data_path=args.data_path)
-    count = 5
+    count = 1
     while count != 0:
         ret = autorepoter.report()
         if ret != False:
