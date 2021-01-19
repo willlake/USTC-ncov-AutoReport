@@ -17,7 +17,7 @@ class Report(object):
 
     def report(self):
         loginsuccess = False
-        retrycount = 5
+        retrycount = 1
         while (not loginsuccess) and retrycount:
             session = self.login()
             cookies = session.cookies
@@ -42,20 +42,21 @@ class Report(object):
 
         headers = {
             'authority': 'weixine.ustc.edu.cn',
-            'origin': 'http://weixine.ustc.edu.cn',
+            'origin': 'https://weixine.ustc.edu.cn',
             'upgrade-insecure-requests': '1',
             'content-type': 'application/x-www-form-urlencoded',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.100 Safari/537.36',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'referer': 'http://weixine.ustc.edu.cn/2020/',
+            'referer': 'https://weixine.ustc.edu.cn/2020/home',
             'accept-language': 'zh-CN,zh;q=0.9',
             'Connection': 'close',
             'cookie': 'PHPSESSID=' + cookies.get("PHPSESSID") + ";XSRF-TOKEN=" + cookies.get(
                 "XSRF-TOKEN") + ";laravel_session=" + cookies.get("laravel_session"),
         }
 
-        url = "http://weixine.ustc.edu.cn/2020/daliy_report"
-        session.post(url, data=data, headers=headers)
+        url = "https://weixine.ustc.edu.cn/2020/daliy_report"
+        ret = session.post(url, data=data, headers=headers)
+        print(ret)
         data = session.get("http://weixine.ustc.edu.cn/2020").text
         soup = BeautifulSoup(data, 'html.parser')
         pattern = re.compile("2021-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
@@ -100,7 +101,7 @@ if __name__ == "__main__":
     parser.add_argument('password', help='your CAS password', type=str)
     args = parser.parse_args()
     autorepoter = Report(stuid=args.stuid, password=args.password, data_path=args.data_path)
-    count = 5
+    count = 1
     while count != 0:
         ret = autorepoter.report()
         if ret != False:
