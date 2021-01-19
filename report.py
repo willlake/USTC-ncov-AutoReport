@@ -21,7 +21,7 @@ class Report(object):
         while (not loginsuccess) and retrycount:
             session = self.login()
             cookies = session.cookies
-            getform = session.get("http://weixine.ustc.edu.cn/2020")
+            getform = session.get("https://weixine.ustc.edu.cn/2020")
             retrycount = retrycount - 1
             if getform.url != "https://weixine.ustc.edu.cn/2020/home":
                 print("Login Failed! Retry...")
@@ -57,7 +57,7 @@ class Report(object):
         url = "https://weixine.ustc.edu.cn/2020/daliy_report"
         ret = session.post(url, data=data, headers=headers)
         print(ret)
-        data = session.get("http://weixine.ustc.edu.cn/2020").text
+        data = session.get("https://weixine.ustc.edu.cn/2020").text
         soup = BeautifulSoup(data, 'html.parser')
         pattern = re.compile("2021-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
         token = soup.find(
@@ -83,7 +83,7 @@ class Report(object):
         url = "https://passport.ustc.edu.cn/login?service=http%3A%2F%2Fweixine.ustc.edu.cn%2F2020%2Fcaslogin"
         data = {
             'model': 'uplogin.jsp',
-            'service': 'http://weixine.ustc.edu.cn/2020/caslogin',
+            'service': 'https://weixine.ustc.edu.cn/2020/caslogin',
             'username': self.stuid,
             'password': str(self.password),
         }
